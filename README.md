@@ -2,7 +2,7 @@
 
 ---
 
-## Dependancies
+## Dependencies
 
 - **JDK** (`>=17.0.18`)
 - **FlatLaf** (`>=3.7` [Link](https://www.formdev.com/flatlaf/))
