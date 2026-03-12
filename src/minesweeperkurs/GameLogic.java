@@ -23,7 +23,7 @@ public class GameLogic {
 	
     private final Random random = new Random();
 	private final List<List<CellState>> field;
-	//private final List<List<Integer>> nearbyMineCounts;
+	private final List<List<Byte>> nearbyMineCounts;
 	private final int ROWS = 18;
     private final int COLS = 30;
     private final int MINES_COUNT = 99;
@@ -33,6 +33,7 @@ public class GameLogic {
 
 	public GameLogic(){
 		this.field = new ArrayList<>();
+		this.nearbyMineCounts = new ArrayList<>();
 		initField();
 	}
 	
@@ -54,9 +55,15 @@ public class GameLogic {
 				positionsList.add(new int[]{i, j});
 			}
 		}
+		
 		Collections.shuffle(positionsList);
 		positionsList.stream().limit(MINES_COUNT).forEach(pos -> field.get(pos[0]).set(pos[1], CellState.CONTAINS_MINE));
 		
+		for (int i = 0; i < ROWS; i++) {
+			for (int j = 0; j < COLS; j++) {
+				nearbyMineCounts.get(i).set(j, countNearbyMines(i, j));
+			}
+		}
 	}
 
 	public int[] getFieldSize() {
@@ -98,66 +105,83 @@ public class GameLogic {
 	public boolean getGameStatus() {
 		return gameOver;
 	}
+
+	public void toggleFlag(int row, int col) {
+		CellState state = field.get(col).get(row);
+		if (null != state) switch (state) {
+			case EMPTY -> field.get(row).set(col, CellState.FLAGGED);
+			case CONTAINS_MINE -> field.get(row).set(col, CellState.FLAGGED_MINE);
+			case FLAGGED -> field.get(row).set(col, CellState.EMPTY);
+			case FLAGGED_MINE -> field.get(row).set(col, CellState.CONTAINS_MINE);
+			default -> {
+			}
+		}
+		updateCounter();
+	}
 	
-//	
-//    public void UpdateCounter() {
-//		int CountedFlags = CountFlaggedCells();
-//		if (CountedFlags <= MineCounter) {
-//			MineCounter = MinesCount - CountedFlags;
-//		}
-//	}
-//            
-//	public int CountNearbyMines(int Row, int Col) {
-//		int Counter = 0;
-//		int[][] AdjacentObjectsCoordinates = new int[][] {
-//			{-1, -1},
-//			{-1, 0},
-//			{-1, 1},
-//			{0, -1},
-//			{0, 1},
-//			{1, -1},
-//			{1, 0},
-//			{1, 1}
-//		};
-//		for	(int i = 0; i < 8; i++) {
-//			if ((Row + AdjacentObjectsCoordinates[i][0] < 0 || Row + AdjacentObjectsCoordinates[i][0] >= RowsCount) ||
-//    (Col + AdjacentObjectsCoordinates[i][1] < 0 || Col + AdjacentObjectsCoordinates[i][1] >= ColsCount)){
-//			}
-//			else {
-//				if (this.GameField[AdjacentObjectsCoordinates[i][0] + Row][AdjacentObjectsCoordinates[i][1] + Col] == CellState.ContainesMine.ordinal() || this.GameField[AdjacentObjectsCoordinates[i][0] + Row][AdjacentObjectsCoordinates[i][1] + Col] == CellState.Blown.ordinal()) {
-//				Counter++;
-//				}
-//			} 
-//		}
-//		return Counter;
-//	}
+	private byte countNearbyMines(int row, int col) {
+		byte count = 0;
+		for (int i = -1; i < 2; i++) {
+			for (int j = -1; j < 2; j++) {
+				if (i == 0 && j == 0) {
+					continue;
+				}
+				if (i + row < 0 && i + row > ROWS && j + col < 0 && j + col > COLS) {
+					if (field.get(row + i).get(col + j) == CellState.CONTAINS_MINE || field.get(row + i).get(col + j) == CellState.FLAGGED_MINE) {
+						count++;
+					}
+				}
+			}
+		}
+		return count;
+	}
+
+	private byte countNearbyFlags(int row, int col) {
+		byte count = 0;
+		for (int i = -1; i < 2; i++) {
+			for (int j = -1; j < 2; j++) {
+				if (i == 0 && j == 0) {
+					continue;
+				}
+				if (i + row < 0 && i + row > ROWS && j + col < 0 && j + col > COLS) {
+					if (field.get(row + i).get(col + j) == CellState.FLAGGED || field.get(row + i).get(col + j) == CellState.FLAGGED_MINE) {
+						count++;
+					}
+				}
+			}
+		}
+		return count;
+	}
+	
+    public void updateCounter() {
+		int countedFlags = countFlaggedCells();
+		if (countedFlags <= minesRemain) {
+			minesRemain = MINES_COUNT - countedFlags;
+		}
+	}
+
+	public void openCell(int row, int col) {
+		if (gameOver) return;
+		CellState state = field.get(row).get(col);
+		if (null != state) switch (state) {
+			case EMPTY -> {
+				if (nearbyMineCounts.get(row).get(col) == 0){
+					//Open nearby cells placeholder
+					return;
+				}
+				field.get(row).set(col, CellState.OPENED);
+			}
+			case CONTAINS_MINE -> {
+				gameOver = true;
+				//Change all states to blown for cells that contain mine placeholder
+			}
+		}
+	}
+
+//	public List<byte[]> getCellsToOpenList() {
+//		List<byte[]> toOpen = new ArrayList<>();
 //
-//	private int CountNearbyFlags(int Row, int Col) {
-//		int Counter = 0;
-//		int[][] AdjacentObjectsCoordinates = new int[][] {
-//			{-1, -1},
-//			{-1, 0},
-//			{-1, 1},
-//			{0, -1},
-//			{0, 1},
-//			{1, -1},
-//			{1, 0},
-//			{1, 1}
-//		};
-//		for	(int i = 0; i < 8; i++) {
-//			if ((Row + AdjacentObjectsCoordinates[i][0] < 0 || Row + AdjacentObjectsCoordinates[i][0] >= RowsCount) ||
-//    (Col + AdjacentObjectsCoordinates[i][1] < 0 || Col + AdjacentObjectsCoordinates[i][1] >= ColsCount)){
-//			}
-//			else {
-//				if (this.GameField[AdjacentObjectsCoordinates[i][0] + Row][AdjacentObjectsCoordinates[i][1] + Col] == CellState.FlaggedMine.ordinal() || this.GameField[AdjacentObjectsCoordinates[i][0] + Row][AdjacentObjectsCoordinates[i][1] + Col] == CellState.Flagged.ordinal()) {
-//				Counter++;
-//				}
-//			} 
-//		}
-//		return Counter;
 //	}
-//	
-//	
 //	public void OpenCell(int Row, int Col) {
 //		if (GameOver || GameField[Row][Col] == CellState.Flagged.ordinal() || GameField[Row][Col] == CellState.FlaggedMine.ordinal()) {return;}
 //		if (this.GameField[Row][Col] == CellState.ContainesMine.ordinal()) {
