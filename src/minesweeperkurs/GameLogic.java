@@ -6,6 +6,7 @@ package minesweeperkurs;
 import java.awt.desktop.OpenFilesHandler;
 import javax.swing.border.EmptyBorder;
 import java.util.*;
+import javax.swing.JList;
 /**
  *
  * @author tolyan
@@ -71,17 +72,7 @@ public class GameLogic {
 		return fieldSize;
 	}
 
-    public int setValue(CellState value, short row, short col) {
-    	if ((row > ROWS || row < 0) || (col > COLS || col < 0)) {
-		    return 1;
-	    }
-		else {
-			field.get(row).set(col, value);
-			return 0;
-		}
-    }
-
-    public CellState getValue(short row, short col) {
+    public CellState getState(short row, short col) {
 		if ((row > ROWS || row < 0) || (col > COLS || col < 0)) {
 				//write custom exception here 
 				return field.get(row).get(col);
@@ -91,6 +82,12 @@ public class GameLogic {
 			}
 	}
 
+	public byte getNearbyMinesCount(short row, short col) {
+		if (row < ROWS -1 || row < 0 || col < 0 || col > COLS - 1) {
+			return -1; // Write exception here
+		}
+		return nearbyMineCounts.get(row).get(col);
+	}
 
 	private short countFlaggedCells() {
 		short count = (short) field.stream().flatMap(List::stream).filter(state -> state == CellState.FLAGGED || state == CellState.FLAGGED_MINE).count();
@@ -123,13 +120,11 @@ public class GameLogic {
 		byte count = 0;
 		for (int i = -1; i < 2; i++) {
 			for (int j = -1; j < 2; j++) {
-				if (i == 0 && j == 0) {
+				if ((i == 0 && j == 0) || i + row < 0 || i + row > ROWS || j + col < 0 || j + col > COLS) {
 					continue;
 				}
-				if (i + row < 0 && i + row > ROWS && j + col < 0 && j + col > COLS) {
-					if (field.get(row + i).get(col + j) == CellState.CONTAINS_MINE || field.get(row + i).get(col + j) == CellState.FLAGGED_MINE) {
+				if (field.get(row + i).get(col + j) == CellState.CONTAINS_MINE || field.get(row + i).get(col + j) == CellState.FLAGGED_MINE) {
 						count++;
-					}
 				}
 			}
 		}
@@ -140,16 +135,14 @@ public class GameLogic {
 		byte count = 0;
 		for (int i = -1; i < 2; i++) {
 			for (int j = -1; j < 2; j++) {
-				if (i == 0 && j == 0) {
+				if ((i == 0 && j == 0) || i + row < 0 || i + row > ROWS || j + col < 0 || j + col > COLS) {
 					continue;
-				}
-				if (i + row < 0 && i + row > ROWS && j + col < 0 && j + col > COLS) {
-					if (field.get(row + i).get(col + j) == CellState.FLAGGED || field.get(row + i).get(col + j) == CellState.FLAGGED_MINE) {
+					}
+				if (field.get(row + i).get(col + j) == CellState.FLAGGED || field.get(row + i).get(col + j) == CellState.FLAGGED_MINE) {
 						count++;
 					}
 				}
 			}
-		}
 		return count;
 	}
 	
@@ -166,7 +159,7 @@ public class GameLogic {
 		if (null != state) switch (state) {
 			case EMPTY -> {
 				if (nearbyMineCounts.get(row).get(col) == 0){
-					//Open nearby cells placeholder
+					openCellsFromList(getCellsToOpenList(row, col));
 					return;
 				}
 				field.get(row).set(col, CellState.OPENED);
@@ -178,67 +171,43 @@ public class GameLogic {
 		}
 	}
 
-	public List<short[]> getCellsToOpenList() {
+	private List<short[]> getCellsToOpenList(short row, short col) {
 		List<short[]> cellsToOpen = new ArrayList<>();
 		boolean[][] visitedCells = new boolean[ROWS][COLS];
 		Queue<short[]> queue = new ArrayDeque<>();
+		short[] startingPoint = {row, col};
+		queue.add(startingPoint);
+		visitedCells[row][col] = true;
+		cellsToOpen.add(startingPoint);
 
-
-		
-
-		
-		
-		
+		while (!queue.isEmpty()) {			
+			short[] currentCell = queue.remove();
+			short currentRow = currentCell[0];
+			short currentCol = currentCell[1];
+			for (short i = -1; i < 2; i++){
+				for (short j = -1; j < 2; i++) {
+					short newRow = (short) (currentRow + i);
+					short newCol = (short) (currentCol + j);
+					if((i == 0 && j == 0) || newRow < 0 || newRow > ROWS - 1 || newCol < 0 || newCol > COLS - 1){
+						continue;
+					}
+					else {
+						if (field.get(newRow).get(newCol) == CellState.EMPTY && visitedCells[newRow][newCol] == false) {
+							short[] nextCell = {newRow, newCol};
+							visitedCells[newRow][newCol] = true;
+							queue.add(nextCell);
+							cellsToOpen.add(nextCell);
+						}
+					}
+				}
+			}
+		}
 		return cellsToOpen;
 	}
-//	public void OpenCell(int Row, int Col) {
-//		if (GameOver || GameField[Row][Col] == CellState.Flagged.ordinal() || GameField[Row][Col] == CellState.FlaggedMine.ordinal()) {return;}
-//		if (this.GameField[Row][Col] == CellState.ContainesMine.ordinal()) {
-//			this.GameField[Row][Col] = CellState.Blown.ordinal();
-//			//GameOver = true;
-//			return;
-//		}
-//		if (this.GameField[Row][Col] == CellState.Empty.ordinal()) {
-//			GameField[Row][Col] = CellState.OpenedEmpty.ordinal();
-//			if (CountNearbyMines(Row, Col) == 0) {
-//				OpenAllNearbyCells(Row, Col);
-//			}
-//		}
-//		
-//	} 
-//
-//	public void OpenAllNearbyCells(int Row, int Col) {
-//		int[][] AdjacentObjectsCoordinates = new int[][] {
-//			{-1, -1},
-//			{-1, 0},
-//			{-1, 1},
-//			{0, -1},
-//			{0, 1},
-//			{1, -1},
-//			{1, 0},
-//			{1, 1}
-//		};
-//		//if (CountNearbyFlags(Row, Col) > CountNearbyMines(Row, Col)) {
-//		//	return;
-//		//}
-//		for	(int i = 0; i < 8; i++) {
-//			if ((Row + AdjacentObjectsCoordinates[i][0] < 0 || Row + AdjacentObjectsCoordinates[i][0] >= RowsCount) || 
-//				(Col + AdjacentObjectsCoordinates[i][1] < 0 || Col + AdjacentObjectsCoordinates[i][1] >= ColsCount)){
-//			}
-//			else{
-//				OpenCell(Row + AdjacentObjectsCoordinates[i][0], Col + AdjacentObjectsCoordinates[i][1]);
-//			}
-//		} 
-//	}
-//
-//	public void ToggleFlag(int Row, int Col) {
-//		if (this.GameField[Row][Col] == CellState.ContainesMine.ordinal() || this.GameField[Row][Col] == CellState.Empty.ordinal()) {
-//			this.GameField[Row][Col] = (this.GameField[Row][Col] == CellState.ContainesMine.ordinal()) ? CellState.FlaggedMine.ordinal() : CellState.Flagged.ordinal();
-//			return;
-//		}
-//		if (this.GameField[Row][Col] == CellState.FlaggedMine.ordinal() || this.GameField[Row][Col] == CellState.Flagged.ordinal()) {
-//			this.GameField[Row][Col] = (this.GameField[Row][Col] == CellState.FlaggedMine.ordinal()) ? CellState.ContainesMine.ordinal() : CellState.Empty.ordinal();
-//		}
-//	}
 
+	private void openCellsFromList(List<short[]> list) {
+		for (short[] array : list) {
+			field.get(array[0]).set(array[1], CellState.OPENED);
+		}
+	}
 }
