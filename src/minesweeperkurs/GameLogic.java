@@ -3,10 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package minesweeperkurs;
-import java.awt.desktop.OpenFilesHandler;
-import javax.swing.border.EmptyBorder;
 import java.util.*;
-import javax.swing.JList;
 /**
  *
  * @author tolyan
@@ -27,7 +24,7 @@ public class GameLogic {
 	private final List<List<Byte>> nearbyMineCounts;
 	private final short ROWS = 18;
     private final short COLS = 30;
-    private final short MINES_COUNT = 99;
+    private final int MINES_COUNT = 99;
     private int minesRemain = MINES_COUNT;
 	private boolean gameOver;
 	private boolean winCondition;
@@ -99,8 +96,8 @@ public class GameLogic {
 		return winCondition;
 	}
 
-	public boolean getGameStatus() {
-		return gameOver;
+	public boolean[] getGameStatus() {
+		return new boolean[]{gameOver, winCondition};
 	}
 
 	public void toggleFlag(short row, short col) {
@@ -113,7 +110,6 @@ public class GameLogic {
 			default -> {
 			}
 		}
-		updateCounter();
 	}
 	
 	private byte countNearbyMines(short row, short col) {
@@ -191,13 +187,13 @@ public class GameLogic {
 					if((i == 0 && j == 0) || newRow < 0 || newRow > ROWS - 1 || newCol < 0 || newCol > COLS - 1){
 						continue;
 					}
-					else {
-						if (field.get(newRow).get(newCol) == CellState.EMPTY && visitedCells[newRow][newCol] == false) {
-							short[] nextCell = {newRow, newCol};
-							visitedCells[newRow][newCol] = true;
+					if (field.get(newRow).get(newCol) == CellState.EMPTY && visitedCells[newRow][newCol] == false){
+						short[] nextCell = {newRow, newCol};
+						visitedCells[newRow][newCol] = true;
+						if (nearbyMineCounts.get(newRow).get(newCol) == 0) {
 							queue.add(nextCell);
-							cellsToOpen.add(nextCell);
 						}
+						cellsToOpen.add(nextCell);
 					}
 				}
 			}
