@@ -62,17 +62,17 @@ public class MinesweeperWindow extends JFrame{
 		c.gridy = 0;
 		panel.add(btnMenu);
 		GameLogic game = new GameLogic();
-//		short[] fieldSize = game.getFieldSize();
-//		JPanel gameField = new JPanel(new GridLayout(fieldSize[0], fieldSize[1], 3, 3));
-//		gameField.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-//		JButton[][] fieldButtons = createButtons(fieldSize[0], fieldSize[1], gameField);
-//		c.gridy = 1;
-//		c.gridwidth = GridBagConstraints.REMAINDER;
-//		c.weighty = 1.0;
-//		c.fill = GridBagConstraints.BOTH;
-//		c.insets = new Insets(10, 5, 0, 5);
-//		
-//		panel.add(gameField, c);
+		short[] fieldSize = game.getFieldSize();
+		JPanel gameField = new JPanel(new GridLayout(fieldSize[0], fieldSize[1], 3, 3));
+		gameField.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+		JButton[][] fieldButtons = createButtons(fieldSize[0], fieldSize[1], gameField);
+		c.gridy = 1;
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.weighty = 1.0;
+		c.fill = GridBagConstraints.BOTH;
+		c.insets = new Insets(10, 5, 0, 5);
+		
+		panel.add(gameField, c);
 		
 		return panel;
 	}

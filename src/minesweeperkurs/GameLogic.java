@@ -45,7 +45,7 @@ public class GameLogic {
 			}
 			field.add(row);
 		}
-
+		
 		List<short[]> positionsList = new ArrayList<>();
 		for (short i = 0; i < ROWS; i++) {
 			for (short j = 0; j < COLS; j++) { 
@@ -55,12 +55,15 @@ public class GameLogic {
 		
 		Collections.shuffle(positionsList);
 		positionsList.stream().limit(MINES_COUNT).forEach(pos -> field.get(pos[0]).set(pos[1], CellState.CONTAINS_MINE));
-		
-		for (short i = 0; i < ROWS; i++) {
-			for (short j = 0; j < COLS; j++) {
-				nearbyMineCounts.get(i).set(j, countNearbyMines(i, j));
+
+		for(short i = 0; i < ROWS; i++) {
+			List<Byte> row = new ArrayList<>();
+			for(short j = 0; j < COLS; j++) {
+				row.add(countNearbyMines(i, j));
 			}
+			nearbyMineCounts.add(row);
 		}
+		
 	}
 
 	public short[] getFieldSize() {
@@ -69,7 +72,7 @@ public class GameLogic {
 	}
 
     public CellState getState(short row, short col) {
-		if ((row > ROWS || row < 0) || (col > COLS || col < 0)) {
+		if ((row >= ROWS || row < 0) || (col >= COLS || col < 0)) {
 				//write custom exception here 
 				return field.get(row).get(col);
 			}
@@ -79,7 +82,7 @@ public class GameLogic {
 	}
 
 	public byte getNearbyMinesCount(short row, short col) {
-		if (row < ROWS -1 || row < 0 || col < 0 || col > COLS - 1) {
+		if (row >= ROWS || row < 0 || col < 0 || col >= COLS) {
 			return -1; // Write exception here
 		}
 		return nearbyMineCounts.get(row).get(col);
@@ -115,7 +118,7 @@ public class GameLogic {
 		byte count = 0;
 		for (int i = -1; i < 2; i++) {
 			for (int j = -1; j < 2; j++) {
-				if ((i == 0 && j == 0) || i + row < 0 || i + row > ROWS || j + col < 0 || j + col > COLS) {
+				if ((i == 0 && j == 0) || i + row < 0 || i + row >= ROWS || j + col < 0 || j + col >= COLS) {
 					continue;
 				}
 				if (field.get(row + i).get(col + j) == CellState.CONTAINS_MINE || field.get(row + i).get(col + j) == CellState.FLAGGED_MINE) {
@@ -130,7 +133,7 @@ public class GameLogic {
 		byte count = 0;
 		for (int i = -1; i < 2; i++) {
 			for (int j = -1; j < 2; j++) {
-				if ((i == 0 && j == 0) || i + row < 0 || i + row > ROWS || j + col < 0 || j + col > COLS) {
+				if ((i == 0 && j == 0) || i + row < 0 || i + row >= ROWS || j + col < 0 || j + col >= COLS) {
 					continue;
 					}
 				if (field.get(row + i).get(col + j) == CellState.FLAGGED || field.get(row + i).get(col + j) == CellState.FLAGGED_MINE) {
@@ -183,7 +186,7 @@ public class GameLogic {
 				for (short j = -1; j < 2; i++) {
 					short newRow = (short) (currentRow + i);
 					short newCol = (short) (currentCol + j);
-					if((i == 0 && j == 0) || newRow < 0 || newRow > ROWS - 1 || newCol < 0 || newCol > COLS - 1){
+					if((i == 0 && j == 0) || newRow < 0 || newRow >= ROWS || newCol < 0 || newCol >= COLS){
 						continue;
 					}
 					if (field.get(newRow).get(newCol) == CellState.EMPTY && visitedCells[newRow][newCol] == false){
