@@ -21,6 +21,12 @@ public class MinesweeperWindow extends JFrame{
 		setContentPane(appMenu);
 	}
 
+	private void switchPanel(JPanel panel) {
+		setContentPane(panel);
+		revalidate();
+		repaint();
+	}
+	
 	private JPanel createMenuPanel() {
 		JPanel panel = new JPanel(new GridLayout(4, 1, 0, 40));
 		panel.setBorder(BorderFactory.createEmptyBorder(50, 250, 50, 250));
@@ -40,6 +46,7 @@ public class MinesweeperWindow extends JFrame{
 		panel.add(btnExit);
 
 		btnExit.addActionListener(e -> System.exit(0));
+		
 		
 		return panel;
 	}
