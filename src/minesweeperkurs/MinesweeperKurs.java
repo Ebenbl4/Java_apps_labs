@@ -20,22 +20,7 @@ public class MinesweeperKurs {
     public static void main(String[] args) {
         FlatLightLaf.setup();
         SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Сапёр");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            
-            // Твой класс с логикой
-            GameLogic logic = new GameLogic(); // строки, столбцы, мины
-            
-            GameField grid = new GameField(logic);
-            grid.updateAllCellsRender();
-            
-            frame.add(grid, BorderLayout.CENTER);
-            
-            // Можно добавить сверху панель с таймером, счётчиком мин и т.д.
-            frame.pack();
-            frame.setLocationRelativeTo(null);
-            frame.setResizable(false);
-            frame.setVisible(true);
+            new MinesweeperWindow().setVisible(true);
         });
     }
 }

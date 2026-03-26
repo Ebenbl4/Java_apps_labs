@@ -38,18 +38,18 @@ public class GameLogic {
 		minesRemain = MINES_COUNT;
 		gameOver = false;
 		winCondition = false;
-		for(int i = 0; i < ROWS; i++) {
+		for(short i = 0; i < ROWS; i++) {
 			List<CellState> row = new ArrayList<>();
-			for(int j = 0; j < COLS; j++) {
+			for(short j = 0; j < COLS; j++) {
 				row.add(CellState.EMPTY);
 			}
 			field.add(row);
 		}
 
-		List<int[]> positionsList = new ArrayList<>();
-		for (int i = 0; i < ROWS; i++) {
-			for (int j = 0; j < COLS; j++) { 
-				positionsList.add(new int[]{i, j});
+		List<short[]> positionsList = new ArrayList<>();
+		for (short i = 0; i < ROWS; i++) {
+			for (short j = 0; j < COLS; j++) { 
+				positionsList.add(new short[]{i, j});
 			}
 		}
 		
@@ -63,8 +63,8 @@ public class GameLogic {
 		}
 	}
 
-	public int[] getFieldSize() {
-		int[] fieldSize = {ROWS, COLS};
+	public short[] getFieldSize() {
+		short[] fieldSize = {ROWS, COLS};
 		return fieldSize;
 	}
 
