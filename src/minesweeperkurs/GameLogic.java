@@ -19,7 +19,6 @@ public class GameLogic {
 		BLOWN,
 	}
 	
-    private final Random random = new Random();
 	private final List<List<CellState>> field;
 	private final List<List<Byte>> nearbyMineCounts;
 	private final short ROWS = 18;
@@ -206,4 +205,6 @@ public class GameLogic {
 			field.get(array[0]).set(array[1], CellState.OPENED);
 		}
 	}
+
+	
 }
