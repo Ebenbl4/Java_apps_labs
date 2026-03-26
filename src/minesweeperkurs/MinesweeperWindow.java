@@ -38,6 +38,8 @@ public class MinesweeperWindow extends JFrame{
 		panel.add(btnOption1);
 		panel.add(btnOption2);
 		panel.add(btnExit);
+
+		btnExit.addActionListener(e -> System.exit(0));
 		
 		return panel;
 	}
