@@ -128,7 +128,7 @@ public class MinesweeperWindow extends JFrame{
 		for (short i = 0; i < fieldSize[0]; i++) {
 			for (short j = 0; j < fieldSize[1]; j++) {
 				JButton button = buttons[i][j];
-				GameLogic.CellState state = game.getState(i, j);
+				CellState state = game.getState(i, j);
 				switch (state) {
 					case OPENED -> {
 						byte nearbyMines = game.getNearbyMinesCount(i, j);
