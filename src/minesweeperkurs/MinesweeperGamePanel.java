@@ -134,8 +134,4 @@ public class MinesweeperGamePanel extends JPanel {
 				}
 			}
 		}
-
-		private void renderListCells(List<short> list) {
-			
-		}
 }

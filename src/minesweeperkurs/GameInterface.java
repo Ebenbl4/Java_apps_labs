@@ -15,5 +15,6 @@ public interface GameInterface {
 	public boolean checkWinCondition();
 	public boolean[] getGameStatus();
 	public void updateCounter();
-	public void openCell(short row, short col);
+//	public void openCell(short row, short col);
+	OpenCellInterface openCell(short row, short col);
 }

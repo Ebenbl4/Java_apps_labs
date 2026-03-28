@@ -4,6 +4,7 @@
  */
 package minesweeperkurs;
 import java.util.*;
+import minesweeperkurs.OpenCellInterface.*;
 /**
  *
  * @author tolyan
@@ -150,24 +151,27 @@ public class GameLogic implements GameInterface {
 	}
 
 	@Override
-	public void openCell(short row, short col) {
-		if (gameOver) return;
+	public OpenCellInterface openCell(short row, short col) {
+		if (gameOver) return new NoAction();
 		CellState state = field.get(row).get(col);
 		if (null != state) switch (state) {
 			case EMPTY -> {
 				if (nearbyMineCounts.get(row).get(col) == 0){
 					List<short[]> list = getCellsToOpenList(row, col);
 					openCellsFromList(list);
+					return new MultipleCells(list);
 				}
 				else {
 					field.get(row).set(col, CellState.OPENED);
+					return new SingleCell(row, col);
 				}
 			}
 			case CONTAINS_MINE -> {
 				gameOver = true;
-				//Change all states to blown for cells that contain mine placeholder
+				return new NoAction();
 			}
 		}
+		return new NoAction();
 	}
 
 	private List<short[]> getCellsToOpenList(short row, short col) {
