@@ -27,8 +27,8 @@ public class MinesweeperGamePanel extends JPanel {
 	}
 
 	public final void initGameField() {
-			GameLogic game = new GameLogic();
-			short[] fieldSize = game.getFieldSize();
+			this.gameInterface = new GameLogic();
+			short[] fieldSize = gameInterface.getFieldSize();
 			this.rows = fieldSize[0];
 			this.cols = fieldSize[1];
 

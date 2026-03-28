@@ -10,7 +10,6 @@ package minesweeperkurs;
  */
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class MinesweeperWindow extends JFrame {
 
@@ -18,15 +17,7 @@ public class MinesweeperWindow extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(800, 600);
 		setLocationRelativeTo(null);
-//		JPanel appMenu = createMenuPanel();
-//		setContentPane(appMenu);
 		switchToMenu();
-	}
-
-	private void switchPanel(JPanel panel) {
-		setContentPane(panel);
-		revalidate();
-		repaint();
 	}
 
 	private void switchToMenu() {
@@ -65,5 +56,4 @@ public class MinesweeperWindow extends JFrame {
 
 		return panel;
 	}
-
 }
