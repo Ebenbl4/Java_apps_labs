@@ -4,8 +4,6 @@
  */
 package minesweeperkurs;
 
-import java.io.ObjectInputStream;
-
 /**
  *
  * @author tolyan
@@ -17,5 +15,5 @@ public interface GameInterface {
 	public boolean checkWinCondition();
 	public boolean[] getGameStatus();
 	public void updateCounter();
-	public byte openCell(short row, short col);
+	public void openCell(short row, short col);
 }

@@ -8,7 +8,6 @@ package minesweeperkurs;
  *
  * @author tolyan
  */
-
 public enum CellState {
 	EMPTY,
 	CONTAINS_MINE,
