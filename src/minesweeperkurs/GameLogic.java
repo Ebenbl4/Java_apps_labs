@@ -23,7 +23,7 @@ public class GameLogic {
 	private final List<List<Byte>> nearbyMineCounts;
 	private final short ROWS = 18;
     private final short COLS = 30;
-    private final int MINES_COUNT = 99;
+    private final int MINES_COUNT = 20;
     private int minesRemain = MINES_COUNT;
 	private boolean gameOver;
 	private boolean winCondition;
@@ -157,10 +157,12 @@ public class GameLogic {
 		if (null != state) switch (state) {
 			case EMPTY -> {
 				if (nearbyMineCounts.get(row).get(col) == 0){
-					openCellsFromList(getCellsToOpenList(row, col));
-					return;
+					List<short[]> list = getCellsToOpenList(row, col);
+					openCellsFromList(list);
 				}
-				field.get(row).set(col, CellState.OPENED);
+				else {
+					field.get(row).set(col, CellState.OPENED);
+				}
 			}
 			case CONTAINS_MINE -> {
 				gameOver = true;
@@ -183,7 +185,7 @@ public class GameLogic {
 			short currentRow = currentCell[0];
 			short currentCol = currentCell[1];
 			for (short i = -1; i < 2; i++){
-				for (short j = -1; j < 2; i++) {
+				for (short j = -1; j < 2; j++) {
 					short newRow = (short) (currentRow + i);
 					short newCol = (short) (currentCol + j);
 					if((i == 0 && j == 0) || newRow < 0 || newRow >= ROWS || newCol < 0 || newCol >= COLS){

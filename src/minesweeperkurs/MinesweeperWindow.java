@@ -142,19 +142,21 @@ public class MinesweeperWindow extends JFrame{
 					}
 					case EMPTY -> {
 						button.setText("");
-						button.setBackground(Color.gray);
 					}
 					case CONTAINS_MINE -> {
 						button.setText("");
-						button.setBackground(Color.gray);
 					}
 					case FLAGGED -> {
 						button.setText("F");
-						button.setBackground(Color.gray);
+					}
+					case FLAGGED_MINE -> {
+						button.setText("F");
+
 					}
 					default -> {
 					}
 				}
+				button.setEnabled(true);
 			}
 		}
 	}
