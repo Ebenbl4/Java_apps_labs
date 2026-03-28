@@ -8,6 +8,12 @@ package minesweeperkurs;
  *
  * @author tolyan
  */
-public class CellState {
-	
+
+public enum CellState {
+	EMPTY,
+	CONTAINS_MINE,
+	FLAGGED,
+	FLAGGED_MINE,
+	OPENED,
+	BLOWN,
 }
