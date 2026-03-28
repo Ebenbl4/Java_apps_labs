@@ -9,15 +9,7 @@ import java.util.*;
  * @author tolyan
  */
 
-public class GameLogic {
-	public static enum CellState {
-		EMPTY,
-		CONTAINS_MINE,
-		FLAGGED,
-		FLAGGED_MINE,
-		OPENED,
-		BLOWN,
-	}
+public class GameLogic implements GameInterface {
 	
 	private final List<List<CellState>> field;
 	private final List<List<Byte>> nearbyMineCounts;
@@ -34,7 +26,7 @@ public class GameLogic {
 		initField();
 	}
 	
-	public void initField() {
+	public final void initField() {
 		minesRemain = MINES_COUNT;
 		gameOver = false;
 		winCondition = false;
@@ -66,11 +58,13 @@ public class GameLogic {
 		
 	}
 
+	@Override
 	public short[] getFieldSize() {
 		short[] fieldSize = {ROWS, COLS};
 		return fieldSize;
 	}
 
+	@Override
     public CellState getState(short row, short col) {
 		if ((row >= ROWS || row < 0) || (col >= COLS || col < 0)) {
 				//write custom exception here 
@@ -81,6 +75,7 @@ public class GameLogic {
 			}
 	}
 
+	@Override
 	public byte getNearbyMinesCount(short row, short col) {
 		if (row >= ROWS || row < 0 || col < 0 || col >= COLS) {
 			return -1; // Write exception here
@@ -93,11 +88,13 @@ public class GameLogic {
 		return count;
 	}
 
+	@Override
 	public boolean checkWinCondition() {
 	winCondition = (ROWS * COLS - MINES_COUNT == (int) field.stream().flatMap(List::stream).filter(state -> state == CellState.OPENED).count());
 		return winCondition;
 	}
 
+	@Override
 	public boolean[] getGameStatus() {
 		return new boolean[]{gameOver, winCondition};
 	}
@@ -144,6 +141,7 @@ public class GameLogic {
 		return count;
 	}
 	
+	@Override
     public void updateCounter() {
 		int countedFlags = countFlaggedCells();
 		if (countedFlags <= minesRemain) {
@@ -151,6 +149,7 @@ public class GameLogic {
 		}
 	}
 
+	@Override
 	public void openCell(short row, short col) {
 		if (gameOver) return;
 		CellState state = field.get(row).get(col);
