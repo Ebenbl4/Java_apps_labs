@@ -95,40 +95,47 @@ public class MinesweeperGamePanel extends JPanel {
 			}
 		}
 
-		private void renderAllCells() {
-			short[] fieldSize = gameInterface.getFieldSize();
-			for (short i = 0; i < fieldSize[0]; i++) {
-				for (short j = 0; j < fieldSize[1]; j++) {
-					JButton button = buttons[i][j];
-					CellState state = gameInterface.getState(i, j);
-					switch (state) {
-						case OPENED -> {
-							byte nearbyMines = gameInterface.getNearbyMinesCount(i, j);
-							if (nearbyMines == 0) {
-								button.setText("");
-							} else {
-								button.setText(String.valueOf(nearbyMines));
-							}
-							button.setBackground(Color.white);
-						}
-						case EMPTY -> {
-							button.setText("");
-						}
-						case CONTAINS_MINE -> {
-							button.setText("");
-						}
-						case FLAGGED -> {
-							button.setText("F");
-						}
-						case FLAGGED_MINE -> {
-							button.setText("F");
-
-						}
-						default -> {
-						}
+		private void renderSingleCell(short row, short col) {
+			JButton button = buttons[row][col];
+			CellState state = gameInterface.getState(row, col);
+			switch (state) {
+				case OPENED -> {
+					byte nearbyMines = gameInterface.getNearbyMinesCount(row, col);
+					if (nearbyMines == 0) {
+						button.setText("");
+					} else {
+						button.setText(String.valueOf(nearbyMines));
 					}
-					button.setEnabled(true);
+					button.setBackground(Color.white);
+				}
+				case EMPTY -> {
+					button.setText("");
+				}
+				case CONTAINS_MINE -> {
+					button.setText("");
+				}
+				case FLAGGED -> {
+					button.setText("F");
+				}
+				case FLAGGED_MINE -> {
+					button.setText("F");
+
+				}
+				default -> {
 				}
 			}
+			button.setEnabled(true);
+		}
+
+		private void renderAllCells() {
+			for (short i = 0; i < rows; i++) {
+				for (short j = 0; j < cols; j++) {
+					renderSingleCell(i, j);
+				}
+			}
+		}
+
+		private void renderListCells(List<short> list) {
+			
 		}
 }
