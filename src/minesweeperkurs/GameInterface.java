@@ -4,10 +4,18 @@
  */
 package minesweeperkurs;
 
+import java.io.ObjectInputStream;
+
 /**
  *
  * @author tolyan
  */
-public class GameInterface {
-	
+public interface GameInterface {
+	public short [] getFieldSize();
+	public CellState getState(short row, short col);
+	public byte getNearbyMinesCount(short row, short col);
+	public boolean checkWinCondition();
+	public boolean[] getGameStatus();
+	public void updateCounter();
+	public byte openCell(short row, short col);
 }
