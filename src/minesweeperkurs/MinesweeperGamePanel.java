@@ -26,7 +26,7 @@ public class MinesweeperGamePanel extends JPanel {
 		initGameField();
 	}
 
-	public final void initGameField() {
+	private void initGameField() {
 			this.gameInterface = new GameLogic();
 			short[] fieldSize = gameInterface.getFieldSize();
 			this.rows = fieldSize[0];
@@ -53,7 +53,7 @@ public class MinesweeperGamePanel extends JPanel {
 			btnMenu.addActionListener(e -> retFunc.run());
 		}
 
-		void createButtons(JPanel grid) {
+		private void createButtons(JPanel grid) {
 			buttons = new JButton[rows][cols];
 			for (short i = 0; i < rows; i++) {
 				for (short j = 0; j < cols; j++) {
