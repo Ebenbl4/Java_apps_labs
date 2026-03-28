@@ -23,7 +23,7 @@ public class GameLogic {
 	private final List<List<Byte>> nearbyMineCounts;
 	private final short ROWS = 18;
     private final short COLS = 30;
-    private final int MINES_COUNT = 20;
+    private final int MINES_COUNT = 99;
     private int minesRemain = MINES_COUNT;
 	private boolean gameOver;
 	private boolean winCondition;
