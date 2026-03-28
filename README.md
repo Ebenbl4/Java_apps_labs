@@ -14,9 +14,10 @@
 TODO list will be changed by the course of work. Some more items can be added to it.
 
 ### Game logic
-- [ ] Write game core logic (some parts of code are done, but it's full of silliness and logic errors).
 - [ ] Write method to open 8 nearby cells by right click.
 - [ ] Add timer.
+- [ ] Fix that you can lose at the first move.
+- [x] Write game core logic (some parts of code are done, but it's full of silliness and logic errors).
 - [x] Make the code compile and run somehow by God's will.
 - [x] Win condition method.
 - [x] Restart method.
@@ -25,10 +26,11 @@ TODO list will be changed by the course of work. Some more items can be added to
 
 
 ### Display
-- [ ] Rewrite code for displaying game field.
 - [ ] Make a timer, a mine counter and an iconic smiling face icon displaying alongside with the game field.
 - [ ] Make graphics suitable for human eyes.
-- [ ] Make graphical menu.
+- [ ] Make an ability to restart game.
+- [x] Make graphical menu.
+- [x] Rewrite code for displaying game field.
 
 ### Networking
 - [ ] Write server/client side implementation for competitive playing on one seed
@@ -37,4 +39,4 @@ TODO list will be changed by the course of work. Some more items can be added to
 
 ## Current status
 
-It compiles. It runs. It runs terribly.
+It compiles. It works (partially). It looks like a pice of garbage. Nice.
