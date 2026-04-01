@@ -13,6 +13,6 @@ import java.util.List;
 public interface OpenCellInterface {
 	record SingleCell(short row, short col) implements OpenCellInterface {};
 	record MultipleCells(List<short[]> cellsList) implements OpenCellInterface {};
-	record OpenAllMines(List<Short[]> minesList) implements OpenCellInterface {};
+	record OpenAllMines(List<short[]> cellsList) implements OpenCellInterface {};
 	record NoAction() implements OpenCellInterface {};
 }

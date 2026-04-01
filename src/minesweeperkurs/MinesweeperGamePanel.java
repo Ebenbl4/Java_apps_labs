@@ -11,10 +11,12 @@ package minesweeperkurs;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MinesweeperGamePanel extends JPanel {
 	private static final Color[] Colors = {
-		Color.black, // Unused
+		Color.black, // Mine color
 		Color.blue,
 		Color.green,
 		Color.red,
@@ -78,7 +80,6 @@ public class MinesweeperGamePanel extends JPanel {
 					button.putClientProperty("col", j);
 					button.addActionListener(e -> {
 						clickedOnCell(button);
-						renderAllCells();
 					});
 					button.addMouseListener(new MouseAdapter() {
 						@Override
@@ -97,12 +98,25 @@ public class MinesweeperGamePanel extends JPanel {
 		private void clickedOnCell(JButton button) {
 			short i = (short) button.getClientProperty("row");
 			short j = (short) button.getClientProperty("col");
-			gameInterface.openCell(i, j);
+			OpenCellInterface record = gameInterface.openCell(i, j);
+			render(record);
 			boolean[] status = gameInterface.getGameStatus();
 			if (status[0] && !status[1]) {
 				JOptionPane.showMessageDialog(this, "ЛМАО, ПОСОСИ!");
 			} else if (status[0] && status[1]) {
 				JOptionPane.showMessageDialog(this, "ГОЙДА!");
+			}
+		}
+
+		private void render(OpenCellInterface record) {
+			if (record instanceof OpenCellInterface.SingleCell single) {
+				renderSingleCell(single.row(), single.col());
+			}
+			else if (record instanceof OpenCellInterface.MultipleCells multiple) {
+				renderCellsFromList(multiple);
+			}
+			else if (record instanceof OpenCellInterface.OpenAllMines mines) {
+				renderShowAllMines(mines);
 			}
 		}
 
@@ -139,11 +153,20 @@ public class MinesweeperGamePanel extends JPanel {
 			button.setEnabled(true);
 		}
 
-		private void renderAllCells() {
-			for (short i = 0; i < rows; i++) {
-				for (short j = 0; j < cols; j++) {
-					renderSingleCell(i, j);
-				}
+		private void renderCellsFromList(OpenCellInterface.MultipleCells record) {
+			List<short[]> cellsToOpen = record.cellsList();
+			for (short[] cell : cellsToOpen) {
+				renderSingleCell(cell[0], cell[1]);
+			}
+		}
+
+		private void renderShowAllMines(OpenCellInterface.OpenAllMines record) {
+			List<short[]> cellsToOpen = record.cellsList();
+			for (short[] cell : cellsToOpen) {
+				JButton button = buttons[cell[0]][cell[1]];
+				button.setText("*");
+				button.setForeground(Colors[0]);
+				button.setBackground(Color.white);
 			}
 		}
 }
