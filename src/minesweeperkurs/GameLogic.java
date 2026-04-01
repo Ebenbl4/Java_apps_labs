@@ -83,7 +83,7 @@ public class GameLogic implements GameInterface {
 		}
 		return nearbyMineCounts.get(row).get(col);
 	}
-
+	
 	private short countFlaggedCells() {
 		short count = (short) field.stream().flatMap(List::stream).filter(state -> state == CellState.FLAGGED || state == CellState.FLAGGED_MINE).count();
 		return count;
@@ -168,12 +168,25 @@ public class GameLogic implements GameInterface {
 			}
 			case CONTAINS_MINE -> {
 				gameOver = true;
-				return new NoAction();
+				blowAllMines();
+				return new OpenAllMines(getBlownCellsList());
 			}
 		}
 		return new NoAction();
 	}
 
+	private List<short[]> getBlownCellsList(){
+		List<short[]> blownCells = new ArrayList<>();
+		for (short i = 0; i < ROWS; i++) {
+			List<CellState> currentRow = field.get(i);
+			for (short j = 0; j < COLS; j++) {
+				if (currentRow.get(j) == CellState.BLOWN) {
+					blownCells.add(new short[]{i, j});
+				}
+			}
+		}
+		return blownCells;
+	}
 	private List<short[]> getCellsToOpenList(short row, short col) {
 		List<short[]> cellsToOpen = new ArrayList<>();
 		boolean[][] visitedCells = new boolean[ROWS][COLS];
@@ -214,5 +227,15 @@ public class GameLogic implements GameInterface {
 		}
 	}
 
-	
+	private void blowAllMines() {
+		field.replaceAll(row -> {
+			row.replaceAll(cell -> {
+			if (cell == CellState.CONTAINS_MINE || cell == CellState.FLAGGED_MINE) {
+				return CellState.BLOWN;
+			}
+			return cell;
+		});
+		return row;
+		});
+	}
 }
