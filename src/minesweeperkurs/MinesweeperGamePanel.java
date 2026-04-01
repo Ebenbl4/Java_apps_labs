@@ -13,6 +13,17 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class MinesweeperGamePanel extends JPanel {
+	private static final Color[] Colors = {
+		Color.black, // Unused
+		Color.blue,
+		Color.green,
+		Color.red,
+		new Color(0, 0, 139), // Dark blue
+		new Color(139, 69, 19), // Brown
+		Color.cyan,
+		Color.black,
+		Color.gray
+	};
 
 	private final Runnable retFunc;
 	private GameInterface gameInterface;
@@ -105,6 +116,7 @@ public class MinesweeperGamePanel extends JPanel {
 						button.setText("");
 					} else {
 						button.setText(String.valueOf(nearbyMines));
+						button.setForeground(Colors[nearbyMines]);
 					}
 					button.setBackground(Color.white);
 				}
