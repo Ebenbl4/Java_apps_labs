@@ -78,13 +78,13 @@ public class MinesweeperGamePanel extends JPanel {
 					button.setMargin(new Insets(0, 0, 0, 0));
 					button.putClientProperty("row", i);
 					button.putClientProperty("col", j);
-					button.addActionListener(e -> {
-						clickedOnCell(button);
-					});
 					button.addMouseListener(new MouseAdapter() {
 						@Override
 						public void mousePressed(MouseEvent e) {
-							if (SwingUtilities.isRightMouseButton(e)) {
+							if (SwingUtilities.isLeftMouseButton(e)){
+								clickedOnCell(button);
+							}
+							else if (SwingUtilities.isRightMouseButton(e)) {
 							} else if (SwingUtilities.isMiddleMouseButton(e)) {
 							}
 						}
