@@ -20,6 +20,7 @@ public class GameLogic implements GameInterface {
     private int minesRemain = MINES_COUNT;
 	private boolean gameOver;
 	private boolean winCondition;
+	private boolean firstClick;
 
 	public GameLogic(){
 		this.field = new ArrayList<>();
@@ -31,6 +32,7 @@ public class GameLogic implements GameInterface {
 		minesRemain = MINES_COUNT;
 		gameOver = false;
 		winCondition = false;
+		firstClick = true;
 		for(short i = 0; i < ROWS; i++) {
 			List<CellState> row = new ArrayList<>();
 			for(short j = 0; j < COLS; j++) {
@@ -56,6 +58,7 @@ public class GameLogic implements GameInterface {
 			}
 			nearbyMineCounts.add(row);
 		}
+		field.get(0).set(0, CellState.CONTAINS_MINE);
 		
 	}
 
@@ -158,6 +161,9 @@ public class GameLogic implements GameInterface {
 		CellState state = field.get(row).get(col);
 		if (null != state) switch (state) {
 			case EMPTY -> {
+				if (firstClick) {
+					firstClick = false;
+				}
 				if (nearbyMineCounts.get(row).get(col) == 0){
 					List<short[]> list = getCellsToOpenList(row, col);
 					openCellsFromList(list);
@@ -169,12 +175,68 @@ public class GameLogic implements GameInterface {
 				}
 			}
 			case CONTAINS_MINE -> {
-				gameOver = true;
-				blowAllMines();
-				return new OpenAllMines(getBlownCellsList());
+				if (firstClick) {
+					moveMineToCorner(row, col);
+					firstClick = false;
+					return openCell(row, col);
+				}
+				else {
+					gameOver = true;
+					blowAllMines();
+					return new OpenAllMines(getBlownCellsList());
+				}
 			}
 		}
 		return new NoAction();
+	}
+
+	private void moveMineToCorner(short row, short col) {
+		field.get(row).set(col, CellState.EMPTY);
+		boolean movedMine = false;
+		short[] movedMineCoords = null;
+		out:
+		for(short i = (short) (ROWS - 1); i > -1; i--) {
+			for(short j = (short) (COLS - 1); j > -1; j-- ) {
+				switch (field.get(i).get(j)) {
+					case EMPTY -> {
+						field.get(i).set(j, CellState.CONTAINS_MINE);
+						movedMine = true;
+						movedMineCoords = new short[] {i, j};
+					}
+					case FLAGGED -> {
+						field.get(i).set(j, CellState.FLAGGED_MINE);
+						movedMine = true;
+						movedMineCoords = new short[] {i, j};
+					}
+					default -> {
+						break;
+					}
+				}
+				if (movedMine) {
+					break out;
+				}
+			}
+		}
+		for (int i = -1; i < 2; i++) {
+			for (int j = -1; j < 2; j++) {
+				short newRow = (short) (i + movedMineCoords[0]);
+				short newCol = (short) (j + col);
+				if ((i == 0 && j == 0) || newRow < 0 || newRow >= ROWS || newCol < 0 || newCol >= COLS) {
+					continue;
+				}
+				nearbyMineCounts.get(newRow).set(newCol, countNearbyMines(newRow, newCol));
+			}
+		}
+		for (int i = -1; i < 2; i++) {
+			for (int j = -1; j < 2; j++) {
+				short newRow = (short) (i + movedMineCoords[0]);
+				short newCol = (short) (j + movedMineCoords[1]);
+				if ((i == 0 && j == 0) || newRow < 0 || newRow >= ROWS || newCol < 0 || newCol >= COLS) {
+					continue;
+				}
+				nearbyMineCounts.get(newRow).set(newCol, countNearbyMines(newRow, newCol));
+			}
+		}
 	}
 
 	private List<short[]> getBlownCellsList(){
