@@ -100,7 +100,8 @@ public class GameLogic implements GameInterface {
 		return new boolean[]{gameOver, winCondition};
 	}
 
-	public void toggleFlag(short row, short col) {
+	@Override
+	public OpenCellInterface toggleFlag(short row, short col) {
 		CellState state = field.get(col).get(row);
 		if (null != state) switch (state) {
 			case EMPTY -> field.get(row).set(col, CellState.FLAGGED);
@@ -110,6 +111,7 @@ public class GameLogic implements GameInterface {
 			default -> {
 			}
 		}
+		return new SingleCell(row, col);
 	}
 	
 	private byte countNearbyMines(short row, short col) {

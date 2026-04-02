@@ -85,6 +85,7 @@ public class MinesweeperGamePanel extends JPanel {
 								clickedOnCell(button);
 							}
 							else if (SwingUtilities.isRightMouseButton(e)) {
+								clickedOnCellRight(button);
 							} else if (SwingUtilities.isMiddleMouseButton(e)) {
 							}
 						}
@@ -98,14 +99,27 @@ public class MinesweeperGamePanel extends JPanel {
 		private void clickedOnCell(JButton button) {
 			short i = (short) button.getClientProperty("row");
 			short j = (short) button.getClientProperty("col");
-			OpenCellInterface record = gameInterface.openCell(i, j);
-			render(record);
+			render(gameInterface.openCell(i, j));
 			boolean[] status = gameInterface.getGameStatus();
 			if (status[0] && !status[1]) {
 				JOptionPane.showMessageDialog(this, "ЛМАО, ПОСОСИ!");
 			} else if (status[0] && status[1]) {
 				JOptionPane.showMessageDialog(this, "ГОЙДА!");
 			}
+		}
+
+		private void clickedOnCellRight(JButton button) {
+			boolean[] status = gameInterface.getGameStatus();
+			if (status[0] && !status[1]) {
+				JOptionPane.showMessageDialog(this, "ЛМАО, ПОСОСИ!");
+				return;
+			} else if (status[0] && status[1]) {
+				JOptionPane.showMessageDialog(this, "ГОЙДА!");
+				return;
+			}
+			short i = (short) button.getClientProperty("row");
+			short j = (short) button.getClientProperty("col");
+			render(gameInterface.toggleFlag(i, j));
 		}
 
 		private void render(OpenCellInterface record) {
@@ -142,10 +156,11 @@ public class MinesweeperGamePanel extends JPanel {
 				}
 				case FLAGGED -> {
 					button.setText("F");
+					button.setForeground(Color.white);
 				}
 				case FLAGGED_MINE -> {
 					button.setText("F");
-
+					button.setForeground(Color.white);
 				}
 				default -> {
 				}
