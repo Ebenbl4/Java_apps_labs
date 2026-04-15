@@ -174,10 +174,9 @@ public class MinesweeperGamePanel extends JPanel {
 		}
 
 		private void gameOver() {
-			boolean condition = gameInterface.getGameOver();
-			boolean win = gameInterface.getWinCondition();
-			if (condition && win) {
+			if (gameInterface.getWinCondition()) {
 				JOptionPane.showMessageDialog(this, "ГОЙДА!");
+				renderCellsFromList((OpenCellInterface.MultipleCells) gameInterface.getFlaggedCellsList());
 			}
 			else {
 				JOptionPane.showMessageDialog(this, "ЛМАО, ПОСОСИ!");

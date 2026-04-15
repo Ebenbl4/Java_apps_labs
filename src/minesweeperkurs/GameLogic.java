@@ -95,10 +95,11 @@ public class GameLogic implements GameInterface {
 	}
 
 	@Override
-	public boolean checkWinCondition() {
-	winCondition = (ROWS * COLS - MINES_COUNT == (int) field.stream().flatMap(List::stream).filter(state -> state == CellState.OPENED).count());
-		if (winCondition) gameOver = winCondition;
-		return winCondition;
+	public void checkWinCondition() {
+		if (winCondition = (ROWS * COLS - MINES_COUNT == (int) field.stream().flatMap(List::stream).filter(state -> state == CellState.OPENED).count())) {
+			gameOver = winCondition;
+			flagAllMines();
+		}
 	}
 
 	@Override
@@ -301,6 +302,20 @@ public class GameLogic implements GameInterface {
 		}
 		return blownCells;
 	}
+
+	public OpenCellInterface getFlaggedCellsList(){
+		List<short[]> flaggedCells = new ArrayList<>();
+		for (short i = 0; i < ROWS; i++) {
+			List<CellState> currentRow = field.get(i);
+			for (short j = 0; j < COLS; j++) {
+				if (currentRow.get(j) == CellState.FLAGGED_MINE) {
+					flaggedCells.add(new short[]{i, j});
+				}
+			}
+		}
+		return new MultipleCells(flaggedCells);
+	}
+	
 	private List<short[]> getCellsToOpenList(short row, short col) {
 		List<short[]> cellsToOpen = new ArrayList<>();
 		boolean[][] visitedCells = new boolean[ROWS][COLS];
@@ -346,6 +361,18 @@ public class GameLogic implements GameInterface {
 			row.replaceAll(cell -> {
 			if (cell == CellState.CONTAINS_MINE || cell == CellState.FLAGGED_MINE) {
 				return CellState.BLOWN;
+			}
+			return cell;
+		});
+		return row;
+		});
+	}
+
+	private void flagAllMines() {
+		field.replaceAll(row -> {
+			row.replaceAll(cell -> {
+			if (cell == CellState.CONTAINS_MINE) {
+				return CellState.FLAGGED_MINE;
 			}
 			return cell;
 		});
