@@ -234,9 +234,6 @@ public class GameLogic implements GameInterface {
 			return new NoAction();
 		}
 		else {
-			//for (short[] cell : cellsToOpen){
-			//	openCell(cell[0], cell[1]);
-			//}
 			openCellsFromList(cellsToOpen);
 			return new MultipleCells(cellsToOpen);
 		}
@@ -271,7 +268,7 @@ public class GameLogic implements GameInterface {
 		}
 		for (int i = -1; i < 2; i++) {
 			for (int j = -1; j < 2; j++) {
-				short newRow = (short) (i + movedMineCoords[0]);
+				short newRow = (short) (i + row);
 				short newCol = (short) (j + col);
 				if ((i == 0 && j == 0) || newRow < 0 || newRow >= ROWS || newCol < 0 || newCol >= COLS) {
 					continue;
