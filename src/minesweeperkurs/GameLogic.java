@@ -16,7 +16,7 @@ public class GameLogic implements GameInterface {
 	private final List<List<Byte>> nearbyMineCounts;
 	private final short ROWS = 18;
     private final short COLS = 30;
-    private final int MINES_COUNT = 99;
+    private final int MINES_COUNT = 10;
     private int minesRemain = MINES_COUNT;
 	private boolean gameOver;
 	private boolean winCondition;
@@ -84,6 +84,10 @@ public class GameLogic implements GameInterface {
 		}
 		return nearbyMineCounts.get(row).get(col);
 	}
+	@Override
+	public boolean getWinCondition() { return winCondition; }
+	@Override
+	public boolean getGameOver() { return gameOver; }
 	
 	private short countFlaggedCells() {
 		short count = (short) field.stream().flatMap(List::stream).filter(state -> state == CellState.FLAGGED || state == CellState.FLAGGED_MINE).count();
@@ -93,12 +97,8 @@ public class GameLogic implements GameInterface {
 	@Override
 	public boolean checkWinCondition() {
 	winCondition = (ROWS * COLS - MINES_COUNT == (int) field.stream().flatMap(List::stream).filter(state -> state == CellState.OPENED).count());
+		if (winCondition) gameOver = winCondition;
 		return winCondition;
-	}
-
-	@Override
-	public boolean[] getGameStatus() {
-		return new boolean[]{gameOver, winCondition};
 	}
 
 	@Override
@@ -164,7 +164,7 @@ public class GameLogic implements GameInterface {
 
 	@Override
 	public OpenCellInterface openCell(short row, short col) {
-		if (gameOver) return new NoAction();
+		if (gameOver) return new NoAction();	
 		CellState state = field.get(row).get(col);
 		if (null != state) switch (state) {
 			case EMPTY -> {

@@ -13,7 +13,8 @@ public interface GameInterface {
 	public CellState getState(short row, short col);
 	public byte getNearbyMinesCount(short row, short col);
 	public boolean checkWinCondition();
-	public boolean[] getGameStatus();
+	public boolean getWinCondition();
+	public boolean getGameOver();
 	public void updateCounter();
 	OpenCellInterface openCell(short row, short col);
 	public OpenCellInterface toggleFlag(short row, short col);

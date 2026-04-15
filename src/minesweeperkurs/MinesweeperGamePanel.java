@@ -101,23 +101,9 @@ public class MinesweeperGamePanel extends JPanel {
 			short i = (short) button.getClientProperty("row");
 			short j = (short) button.getClientProperty("col");
 			render(gameInterface.openCell(i, j));
-			boolean[] status = gameInterface.getGameStatus();
-			if (status[0] && !status[1]) {
-				JOptionPane.showMessageDialog(this, "ЛМАО, ПОСОСИ!");
-			} else if (status[0] && status[1]) {
-				JOptionPane.showMessageDialog(this, "ГОЙДА!");
-			}
 		}
 
 		private void clickedOnCellRight(JButton button) {
-			boolean[] status = gameInterface.getGameStatus();
-			if (status[0] && !status[1]) {
-				JOptionPane.showMessageDialog(this, "ЛМАО, ПОСОСИ!");
-				return;
-			} else if (status[0] && status[1]) {
-				JOptionPane.showMessageDialog(this, "ГОЙДА!");
-				return;
-			}
 			short i = (short) button.getClientProperty("row");
 			short j = (short) button.getClientProperty("col");
 			render(gameInterface.toggleFlag(i, j));
@@ -135,8 +121,9 @@ public class MinesweeperGamePanel extends JPanel {
 			else if (record instanceof OpenCellInterface.MultipleCells multiple) {
 				renderCellsFromList(multiple);
 			}
-			if (gameInterface.checkWinCondition()) {
-				JOptionPane.showMessageDialog(this, "ГОЙДА!");
+			gameInterface.checkWinCondition();
+			if (gameInterface.getGameOver()) {
+				gameOver();
 			}
 		}
 
@@ -183,6 +170,17 @@ public class MinesweeperGamePanel extends JPanel {
 			List<short[]> cellsToOpen = record.cellsList();
 			for (short[] cell : cellsToOpen) {
 				renderSingleCell(cell[0], cell[1]);
+			}
+		}
+
+		private void gameOver() {
+			boolean condition = gameInterface.getGameOver();
+			boolean win = gameInterface.getWinCondition();
+			if (condition && win) {
+				JOptionPane.showMessageDialog(this, "ГОЙДА!");
+			}
+			else {
+				JOptionPane.showMessageDialog(this, "ЛМАО, ПОСОСИ!");
 			}
 		}
 }
