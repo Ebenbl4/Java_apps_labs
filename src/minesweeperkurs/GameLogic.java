@@ -190,7 +190,7 @@ public class GameLogic implements GameInterface {
 				else {
 					gameOver = true;
 					blowAllMines();
-					return new OpenAllMines(getBlownCellsList());
+					return new MultipleCells(getBlownCellsList());
 				}
 			}
 		}
@@ -216,7 +216,7 @@ public class GameLogic implements GameInterface {
 				CellState state = getState(newRow, newCol);
 				if (state == CellState.CONTAINS_MINE) {
 					blowAllMines();
-					return new OpenAllMines(getBlownCellsList());
+					return new MultipleCells(getBlownCellsList());
 				}
 				if (state == CellState.EMPTY) {
 					OpenCellInterface result = openCell(newRow, newCol);

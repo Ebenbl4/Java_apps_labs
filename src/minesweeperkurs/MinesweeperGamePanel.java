@@ -135,9 +135,6 @@ public class MinesweeperGamePanel extends JPanel {
 			else if (record instanceof OpenCellInterface.MultipleCells multiple) {
 				renderCellsFromList(multiple);
 			}
-			else if (record instanceof OpenCellInterface.OpenAllMines mines) {
-				renderShowAllMines(mines);
-			}
 			if (gameInterface.checkWinCondition()) {
 				JOptionPane.showMessageDialog(this, "ГОЙДА!");
 			}
@@ -171,6 +168,11 @@ public class MinesweeperGamePanel extends JPanel {
 					button.setText("F");
 					button.setForeground(Color.white);
 				}
+				case BLOWN -> {
+					button.setText("*");
+					button.setForeground(Colors[0]);
+					button.setBackground(Color.white);
+				}
 				default -> {
 				}
 			}
@@ -181,16 +183,6 @@ public class MinesweeperGamePanel extends JPanel {
 			List<short[]> cellsToOpen = record.cellsList();
 			for (short[] cell : cellsToOpen) {
 				renderSingleCell(cell[0], cell[1]);
-			}
-		}
-
-		private void renderShowAllMines(OpenCellInterface.OpenAllMines record) {
-			List<short[]> cellsToOpen = record.cellsList();
-			for (short[] cell : cellsToOpen) {
-				JButton button = buttons[cell[0]][cell[1]];
-				button.setText("*");
-				button.setForeground(Colors[0]);
-				button.setBackground(Color.white);
 			}
 		}
 }
