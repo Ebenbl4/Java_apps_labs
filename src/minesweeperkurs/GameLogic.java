@@ -103,6 +103,7 @@ public class GameLogic implements GameInterface {
 
 	@Override
 	public OpenCellInterface toggleFlag(short row, short col) {
+		if (gameOver) return new NoAction();
 		CellState state = field.get(row).get(col);
 		if (null != state) switch (state) {
 			case EMPTY -> {
@@ -198,7 +199,7 @@ public class GameLogic implements GameInterface {
 
 	@Override
 	public OpenCellInterface openNearbyCells(short row, short col) {
-		if (getState(row, col) != CellState.OPENED) {
+		if (getState(row, col) != CellState.OPENED || gameOver) {
 			return new NoAction();
 		}
 		List<short[]> cellsToOpen = new ArrayList<>();

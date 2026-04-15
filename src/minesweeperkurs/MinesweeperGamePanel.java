@@ -138,7 +138,9 @@ public class MinesweeperGamePanel extends JPanel {
 			else if (record instanceof OpenCellInterface.OpenAllMines mines) {
 				renderShowAllMines(mines);
 			}
-			gameInterface.checkWinCondition();
+			if (gameInterface.checkWinCondition()) {
+				JOptionPane.showMessageDialog(this, "ГОЙДА!");
+			}
 		}
 
 		private void renderSingleCell(short row, short col) {
