@@ -17,4 +17,5 @@ public interface GameInterface {
 	public void updateCounter();
 	OpenCellInterface openCell(short row, short col);
 	public OpenCellInterface toggleFlag(short row, short col);
+	public OpenCellInterface openNearbyCells(short row, short col);
 }

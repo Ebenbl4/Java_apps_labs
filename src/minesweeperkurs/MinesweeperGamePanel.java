@@ -87,6 +87,7 @@ public class MinesweeperGamePanel extends JPanel {
 							else if (SwingUtilities.isRightMouseButton(e)) {
 								clickedOnCellRight(button);
 							} else if (SwingUtilities.isMiddleMouseButton(e)) {
+								clickedOnCellMiddle(button);
 							}
 						}
 					});
@@ -122,6 +123,11 @@ public class MinesweeperGamePanel extends JPanel {
 			render(gameInterface.toggleFlag(i, j));
 		}
 
+		private void clickedOnCellMiddle(JButton button) {
+			short i = (short) button.getClientProperty("row");
+			short j = (short) button.getClientProperty("col");
+			render(gameInterface.openNearbyCells(i, j));
+		}
 		private void render(OpenCellInterface record) {
 			if (record instanceof OpenCellInterface.SingleCell single) {
 				renderSingleCell(single.row(), single.col());

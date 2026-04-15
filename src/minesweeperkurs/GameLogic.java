@@ -58,8 +58,6 @@ public class GameLogic implements GameInterface {
 			}
 			nearbyMineCounts.add(row);
 		}
-		field.get(0).set(0, CellState.CONTAINS_MINE);
-		
 	}
 
 	@Override
@@ -105,12 +103,20 @@ public class GameLogic implements GameInterface {
 
 	@Override
 	public OpenCellInterface toggleFlag(short row, short col) {
-		CellState state = field.get(col).get(row);
+		CellState state = field.get(row).get(col);
 		if (null != state) switch (state) {
-			case EMPTY -> field.get(row).set(col, CellState.FLAGGED);
-			case CONTAINS_MINE -> field.get(row).set(col, CellState.FLAGGED_MINE);
-			case FLAGGED -> field.get(row).set(col, CellState.EMPTY);
-			case FLAGGED_MINE -> field.get(row).set(col, CellState.CONTAINS_MINE);
+			case EMPTY -> {
+				field.get(row).set(col, CellState.FLAGGED);
+			}
+			case CONTAINS_MINE -> {
+				field.get(row).set(col, CellState.FLAGGED_MINE);
+			}
+			case FLAGGED -> {
+				field.get(row).set(col, CellState.EMPTY);
+			}
+			case FLAGGED_MINE -> {
+				field.get(row).set(col, CellState.CONTAINS_MINE);
+			}
 			default -> {
 			}
 		}
@@ -188,6 +194,52 @@ public class GameLogic implements GameInterface {
 			}
 		}
 		return new NoAction();
+	}
+
+	@Override
+	public OpenCellInterface openNearbyCells(short row, short col) {
+		if (getState(row, col) != CellState.OPENED) {
+			return new NoAction();
+		}
+		List<short[]> cellsToOpen = new ArrayList<>();
+		if (countNearbyFlags(row, col) != getNearbyMinesCount(row, col)) {
+			return new NoAction();
+		}
+		for (int i = -1; i < 2; i++) {
+			for (int j = -1; j < 2; j++) {
+				short newRow = (short) (row + i);
+				short newCol = (short) (col + j);
+				if ((i == 0 && j == 0) || newRow < 0 || newRow >= ROWS || newCol < 0 || newCol >= COLS) {
+					continue;
+				}
+				CellState state = getState(newRow, newCol);
+				if (state == CellState.CONTAINS_MINE) {
+					blowAllMines();
+					return new OpenAllMines(getBlownCellsList());
+				}
+				if (state == CellState.EMPTY) {
+					OpenCellInterface result = openCell(newRow, newCol);
+					if (result instanceof OpenCellInterface.SingleCell single) {
+						cellsToOpen.add(new short[]{single.row(), single.col()});
+					} 
+					else if (result instanceof OpenCellInterface.MultipleCells multiple) {
+						cellsToOpen.addAll(multiple.cellsList());
+					}
+				}
+
+			}
+		}
+			
+		if (cellsToOpen.isEmpty()) {
+			return new NoAction();
+		}
+		else {
+			//for (short[] cell : cellsToOpen){
+			//	openCell(cell[0], cell[1]);
+			//}
+			openCellsFromList(cellsToOpen);
+			return new MultipleCells(cellsToOpen);
+		}
 	}
 
 	private void moveMineToCorner(short row, short col) {
