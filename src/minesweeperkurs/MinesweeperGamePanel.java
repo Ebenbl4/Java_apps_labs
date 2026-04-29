@@ -30,6 +30,7 @@ public class MinesweeperGamePanel extends JPanel {
 	private final Runnable retFunc;
 	private GameInterface gameInterface;
 	private JButton[][] buttons;
+	JLabel flagCounter;
 	private short rows;
 	private short cols;
 	private Timer timer;
@@ -62,14 +63,25 @@ public class MinesweeperGamePanel extends JPanel {
 			topC.insets = new Insets(5, 5, 5, 5);
 			topPanel.add(btnMenu, topC);
 
+			flagCounter = new JLabel("00", JLabel.CENTER);
+			flagCounter.setBackground(Color.WHITE);
+			flagCounter.setForeground(Color.BLACK);
+			flagCounter.setOpaque(true);
+			flagCounter.putClientProperty(FlatClientProperties.STYLE, 
+					"arc: 5; border: 5,5,5,5,#000000");
+			topC.gridx = 1;
+			topC.weightx = 1;
+			topC.anchor = GridBagConstraints.EAST;
+			topPanel.add(flagCounter, topC);
+
 			JLabel timerLabel = new JLabel("00:00", JLabel.CENTER);
 			timerLabel.setBackground(Color.WHITE);
 			timerLabel.setForeground(Color.BLACK);
 			timerLabel.setOpaque(true);
 			timerLabel.putClientProperty(FlatClientProperties.STYLE,
-				"arc: 30; border: 5,5,5,5,#000000");
-			topC.gridx = 1;
-			topC.weightx = 1.0;
+				"arc: 5; border: 5,5,5,5,#000000");
+			topC.gridx = 2;
+			topC.weightx = 0;
 			topC.anchor = GridBagConstraints.EAST;
 			topPanel.add(timerLabel, topC);
 			timer = new Timer(1000, new ActionListener() {
@@ -87,6 +99,7 @@ public class MinesweeperGamePanel extends JPanel {
 					}
 				}
 			});
+			
 			c.gridx = 0;
 			c.gridy = 0;
 			c.gridwidth = GridBagConstraints.REMAINDER;
@@ -152,6 +165,7 @@ public class MinesweeperGamePanel extends JPanel {
 			short i = (short) button.getClientProperty("row");
 			short j = (short) button.getClientProperty("col");
 			render(gameInterface.toggleFlag(i, j));
+			updateFlaggedCellsCounter();
 		}
 
 		private void clickedOnCellMiddle(JButton button) {
@@ -217,6 +231,15 @@ public class MinesweeperGamePanel extends JPanel {
 			for (short[] cell : cellsToOpen) {
 				renderSingleCell(cell[0], cell[1]);
 			}
+		}
+
+		private void updateFlaggedCellsCounter() {
+			short flaggedCellsCount = gameInterface.getFlaggedCellsCount();
+			if (flaggedCellsCount > 99) {
+				return;
+			}
+			String flaggedCellsCountString = (flaggedCellsCount < 10) ? "0" + flaggedCellsCount : String.valueOf(flaggedCellsCount);
+			flagCounter.setText(flaggedCellsCountString);
 		}
 
 		private void gameOver() {

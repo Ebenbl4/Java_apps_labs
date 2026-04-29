@@ -88,8 +88,8 @@ public class GameLogic implements GameInterface {
 	public boolean getWinCondition() { return winCondition; }
 	@Override
 	public boolean getGameOver() { return gameOver; }
-	
-	private short countFlaggedCells() {
+	@Override
+	public short getFlaggedCellsCount() {
 		short count = (short) field.stream().flatMap(List::stream).filter(state -> state == CellState.FLAGGED || state == CellState.FLAGGED_MINE).count();
 		return count;
 	}
@@ -157,7 +157,7 @@ public class GameLogic implements GameInterface {
 	
 	@Override
     public void updateCounter() {
-		int countedFlags = countFlaggedCells();
+		int countedFlags = getFlaggedCellsCount();
 		if (countedFlags <= minesRemain) {
 			minesRemain = MINES_COUNT - countedFlags;
 		}

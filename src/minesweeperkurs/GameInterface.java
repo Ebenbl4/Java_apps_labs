@@ -20,4 +20,5 @@ public interface GameInterface {
 	OpenCellInterface openCell(short row, short col);
 	public OpenCellInterface toggleFlag(short row, short col);
 	public OpenCellInterface openNearbyCells(short row, short col);
+	public short getFlaggedCellsCount();
 }
