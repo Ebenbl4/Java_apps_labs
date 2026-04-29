@@ -12,7 +12,12 @@ import com.formdev.flatlaf.FlatClientProperties;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.text.Normalizer;
+import javax.imageio.ImageIO;
 
 public class MinesweeperGamePanel extends JPanel {
 	private static final Color[] Colors = {
@@ -30,6 +35,8 @@ public class MinesweeperGamePanel extends JPanel {
 	private final Runnable retFunc;
 	private GameInterface gameInterface;
 	private JButton[][] buttons;
+	private JButton iconButton;
+	private BufferedImage tiles[];
 	JLabel flagCounter;
 	private short rows;
 	private short cols;
@@ -63,14 +70,21 @@ public class MinesweeperGamePanel extends JPanel {
 			topC.insets = new Insets(5, 5, 5, 5);
 			topPanel.add(btnMenu, topC);
 
+			createIconButton(topPanel);
+			topC.gridx = 1;
+			topC.gridy = 0;
+			topC.weightx = 1;
+			topC.anchor = GridBagConstraints.CENTER;
+			topPanel.add(iconButton, topC);
+
 			flagCounter = new JLabel("00", JLabel.CENTER);
 			flagCounter.setBackground(Color.WHITE);
 			flagCounter.setForeground(Color.BLACK);
 			flagCounter.setOpaque(true);
 			flagCounter.putClientProperty(FlatClientProperties.STYLE, 
 					"arc: 5; border: 5,5,5,5,#000000");
-			topC.gridx = 1;
-			topC.weightx = 1;
+			topC.gridx = 2;
+			topC.weightx = 0;
 			topC.anchor = GridBagConstraints.EAST;
 			topPanel.add(flagCounter, topC);
 
@@ -80,7 +94,7 @@ public class MinesweeperGamePanel extends JPanel {
 			timerLabel.setOpaque(true);
 			timerLabel.putClientProperty(FlatClientProperties.STYLE,
 				"arc: 5; border: 5,5,5,5,#000000");
-			topC.gridx = 2;
+			topC.gridx = 3;
 			topC.weightx = 0;
 			topC.anchor = GridBagConstraints.EAST;
 			topPanel.add(timerLabel, topC);
@@ -155,6 +169,41 @@ public class MinesweeperGamePanel extends JPanel {
 			}
 		}
 
+		private void createIconButton(JPanel panel) {
+			iconButton = new JButton();
+			iconButton.setSize(24, 24);
+			iconButton.setFocusPainted(false);
+			iconButton.setBorderPainted(false);
+			iconButton.setContentAreaFilled(false);
+			iconButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
+			this.tiles = loadTileSet(loadTilesetFileImage("smiley_faces.bmp"), 16, 16);
+			ImageIcon normalIcon = new ImageIcon(this.tiles[0]);
+			iconButton.setIcon(normalIcon);
+			iconButton.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mousePressed(MouseEvent e) {
+					if (SwingUtilities.isLeftMouseButton(e)) {
+						clickedOnIconButton();
+					}
+				}
+			});
+		}
+
+		private void updateIconButton() {
+			if (gameInterface.getGameOver()) {
+				if (!gameInterface.getWinCondition()) {
+					iconButton.setIcon(new ImageIcon(this.tiles[1]));
+				}
+				else {
+					iconButton.setIcon(new  ImageIcon(this.tiles[2]));
+				}
+			}
+		}
+
+		private void clickedOnIconButton() {
+			// placeholder for reset func.
+		}
+
 		private void clickedOnCell(JButton button) {
 			short i = (short) button.getClientProperty("row");
 			short j = (short) button.getClientProperty("col");
@@ -185,6 +234,26 @@ public class MinesweeperGamePanel extends JPanel {
 				timer.stop();
 				gameOver();
 			}
+		}
+
+		BufferedImage loadTilesetFileImage(String filepath) {
+			try {
+				BufferedImage tileset = ImageIO.read(new File(filepath));
+				return tileset;
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(this, "Image file not found: " + filepath, "Error", JOptionPane.ERROR_MESSAGE);
+				System.exit(1);
+			}		
+			return null;
+		}
+
+		BufferedImage[] loadTileSet(BufferedImage tileset, int tileWidth, int tileHeight) {
+			int tilesCount = tileset.getWidth() / tileWidth;
+			BufferedImage[] tiles = new BufferedImage[tilesCount];
+			for (int i = 0; i < tilesCount; i++) {
+				tiles[i] = tileset.getSubimage(i * tileWidth, 0, tileWidth, tileHeight);
+			}
+			return tiles;
 		}
 
 		private void renderSingleCell(short row, short col) {
@@ -243,6 +312,7 @@ public class MinesweeperGamePanel extends JPanel {
 		}
 
 		private void gameOver() {
+			updateIconButton();
 			if (gameInterface.getWinCondition()) {
 				JOptionPane.showMessageDialog(this, "ГОЙДА!");
 				renderCellsFromList((OpenCellInterface.MultipleCells) gameInterface.getFlaggedCellsList());
