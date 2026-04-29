@@ -8,10 +8,10 @@ package minesweeperkurs;
  *
  * @author tolyan
  */
+import com.formdev.flatlaf.FlatClientProperties;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MinesweeperGamePanel extends JPanel {
@@ -32,6 +32,9 @@ public class MinesweeperGamePanel extends JPanel {
 	private JButton[][] buttons;
 	private short rows;
 	private short cols;
+	private Timer timer;
+	short seconds = 0;
+	short minutes = 0;
 
 	public MinesweeperGamePanel(Runnable retFunc) {
 		this.retFunc = retFunc;
@@ -46,24 +49,66 @@ public class MinesweeperGamePanel extends JPanel {
 			this.cols = fieldSize[1];
 
 			GridBagConstraints c = new GridBagConstraints();
+
+			JPanel topPanel = new JPanel(new GridBagLayout());
+			GridBagConstraints topC = new GridBagConstraints();
+
 			JButton btnMenu = new JButton("To menu");
-			c.weightx = 0.5;
-			c.fill = GridBagConstraints.HORIZONTAL;
+			topC.gridx = 0;
+			topC.gridy = 0;
+			topC.weightx = 0.0;
+			topC.fill = GridBagConstraints.NONE;
+			topC.anchor = GridBagConstraints.WEST;
+			topC.insets = new Insets(5, 5, 5, 5);
+			topPanel.add(btnMenu, topC);
+
+			JLabel timerLabel = new JLabel("00:00", JLabel.CENTER);
+			timerLabel.setBackground(Color.WHITE);
+			timerLabel.setForeground(Color.BLACK);
+			timerLabel.setOpaque(true);
+			timerLabel.putClientProperty(FlatClientProperties.STYLE,
+				"arc: 30; border: 5,5,5,5,#000000");
+			topC.gridx = 1;
+			topC.weightx = 1.0;
+			topC.anchor = GridBagConstraints.EAST;
+			topPanel.add(timerLabel, topC);
+			timer = new Timer(1000, new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					seconds++;
+					if (seconds % 60 == 0) {
+						seconds -= 60;
+						minutes += 1;
+					}
+					if (seconds < 60 && minutes < 100) {
+					String timerSecondsString = (seconds < 10) ? "0" + seconds : String.valueOf(seconds);
+					String timerMinutesString = (minutes < 10) ? "0" + minutes : String.valueOf(minutes);
+					timerLabel.setText(timerMinutesString + ":" + timerSecondsString);
+					}
+				}
+			});
 			c.gridx = 0;
 			c.gridy = 0;
-			add(btnMenu);
+			c.gridwidth = GridBagConstraints.REMAINDER;
+			c.weightx = 1.0;
+			c.weighty = 0.0;
+			c.fill = GridBagConstraints.HORIZONTAL;
+			c.insets = new Insets(5, 5, 10, 5);
+			add(topPanel, c);
 
 			JPanel gameField = new JPanel(new GridLayout(fieldSize[0], fieldSize[1], 3, 3));
 			gameField.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
 			createButtons(gameField);
+
 			c.gridy = 1;
-			c.gridwidth = GridBagConstraints.REMAINDER;
 			c.weighty = 1.0;
 			c.fill = GridBagConstraints.BOTH;
-			c.insets = new Insets(10, 5, 0, 5);
+			c.insets = new Insets(0, 5, 5, 5);
 			add(gameField, c);
 
 			btnMenu.addActionListener(e -> retFunc.run());
+			
+			timer.start();
 		}
 
 		private void createButtons(JPanel grid) {
@@ -123,6 +168,7 @@ public class MinesweeperGamePanel extends JPanel {
 			}
 			gameInterface.checkWinCondition();
 			if (gameInterface.getGameOver()) {
+				timer.stop();
 				gameOver();
 			}
 		}
