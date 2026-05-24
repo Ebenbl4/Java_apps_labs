@@ -91,7 +91,8 @@ public class MinesweeperGamePanel extends JPanel {
 		topC.weightx = 0;
 		topC.anchor = GridBagConstraints.EAST;
 		topPanel.add(flagCounter, topC);
-		flagCounter.setText("99");
+		flagCounter.setText(String.valueOf(gameInterface.getTotalMinesCount()));
+		
 
 		timerLabel = new JLabel("00:00", JLabel.CENTER);
 		timerLabel.setBackground(Color.WHITE);
@@ -341,7 +342,7 @@ public class MinesweeperGamePanel extends JPanel {
 			return;
 		}
 		var differenceBetweenMinesAndFlags = this.minesCount - flaggedCellsCount;
-		String flaggedCellsCountString = (differenceBetweenMinesAndFlags < 10) ? "0" + flaggedCellsCount : String.valueOf(differenceBetweenMinesAndFlags);
+		String flaggedCellsCountString = (differenceBetweenMinesAndFlags < 10) ? "0" + differenceBetweenMinesAndFlags : String.valueOf(differenceBetweenMinesAndFlags);
 		flagCounter.setText(flaggedCellsCountString);
 	}
 
