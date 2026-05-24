@@ -39,6 +39,7 @@ public class MinesweeperGamePanel extends JPanel {
 	private JButton iconButton;
 	private BufferedImage tiles[];
 	JLabel flagCounter;
+	JLabel timerLabel;
 	private short rows;
 	private short cols;
 	private Timer timer;
@@ -92,7 +93,7 @@ public class MinesweeperGamePanel extends JPanel {
 		topPanel.add(flagCounter, topC);
 		flagCounter.setText("99");
 
-		JLabel timerLabel = new JLabel("00:00", JLabel.CENTER);
+		timerLabel = new JLabel("00:00", JLabel.CENTER);
 		timerLabel.setBackground(Color.WHITE);
 		timerLabel.setForeground(Color.BLACK);
 		timerLabel.setOpaque(true);
@@ -141,9 +142,17 @@ public class MinesweeperGamePanel extends JPanel {
 
 		timer.start();
 	}
-	
+
 	private void resetGameField() {
-		
+		this.gameInterface = new GameLogic();
+		flagCounter.setText("99");
+		BufferedImage scaledTile = scaleTile(this.tiles[0], 32, 32);
+		iconButton.setIcon(new ImageIcon(scaledTile));
+		renderAllCells();
+		seconds = 0;
+		minutes = 0;
+		timerLabel.setText("00:00");
+		timer.start();
 	}
 
 	private void createButtons(JPanel grid) {
@@ -191,7 +200,7 @@ public class MinesweeperGamePanel extends JPanel {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				if (SwingUtilities.isLeftMouseButton(e)) {
-					clickedOnIconButton();
+					resetGameField();
 				}
 			}
 		});
@@ -207,10 +216,6 @@ public class MinesweeperGamePanel extends JPanel {
 				iconButton.setIcon(new ImageIcon(scaledTile));
 			}
 		}
-	}
-
-	private void clickedOnIconButton() {
-		// placeholder for reset func.
 	}
 
 	private void clickedOnCell(JButton button) {
@@ -295,9 +300,11 @@ public class MinesweeperGamePanel extends JPanel {
 			}
 			case EMPTY -> {
 				button.setText("");
+				button.setBackground(Color.gray);
 			}
 			case CONTAINS_MINE -> {
 				button.setText("");
+				button.setBackground(Color.gray);
 			}
 			case FLAGGED -> {
 				button.setText("F");
@@ -326,7 +333,9 @@ public class MinesweeperGamePanel extends JPanel {
 	}
 
 	private void updateFlaggedCellsCounter() {
-		if (gameInterface.getGameOver()) return;
+		if (gameInterface.getGameOver()) {
+			return;
+		}
 		short flaggedCellsCount = gameInterface.getFlaggedCellsCount();
 		if (flaggedCellsCount > 99) {
 			return;
@@ -343,6 +352,14 @@ public class MinesweeperGamePanel extends JPanel {
 			renderCellsFromList((OpenCellInterface.MultipleCells) gameInterface.getFlaggedCellsList());
 		} else {
 			JOptionPane.showMessageDialog(this, "ЛМАО, ПОСОСИ!");
+		}
+	}
+	
+	private void renderAllCells() {
+		for (var buttonRows : buttons) {
+			for(var button : buttonRows) {
+				renderSingleCell((short) button.getClientProperty("row"), (short) button.getClientProperty("col"));
+			}
 		}
 	}
 }
