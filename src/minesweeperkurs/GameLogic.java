@@ -308,6 +308,7 @@ public class GameLogic implements GameInterface {
 		return blownCells;
 	}
 
+	@Override
 	public OpenCellInterface getFlaggedCellsList(){
 		List<short[]> flaggedCells = new ArrayList<>();
 		for (short i = 0; i < ROWS; i++) {
