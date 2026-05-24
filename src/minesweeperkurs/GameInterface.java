@@ -21,4 +21,5 @@ public interface GameInterface {
 	public OpenCellInterface toggleFlag(short row, short col);
 	public OpenCellInterface openNearbyCells(short row, short col);
 	public short getFlaggedCellsCount();
+	public int getTotalMinesCount();
 }

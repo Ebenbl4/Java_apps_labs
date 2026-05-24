@@ -44,6 +44,7 @@ public class MinesweeperGamePanel extends JPanel {
 	private Timer timer;
 	short seconds = 0;
 	short minutes = 0;
+	int minesCount = 0;
 
 	public MinesweeperGamePanel(Runnable retFunc) {
 		this.retFunc = retFunc;
@@ -56,6 +57,7 @@ public class MinesweeperGamePanel extends JPanel {
 		short[] fieldSize = gameInterface.getFieldSize();
 		this.rows = fieldSize[0];
 		this.cols = fieldSize[1];
+		this.minesCount = gameInterface.getTotalMinesCount();
 
 		GridBagConstraints c = new GridBagConstraints();
 
@@ -88,6 +90,7 @@ public class MinesweeperGamePanel extends JPanel {
 		topC.weightx = 0;
 		topC.anchor = GridBagConstraints.EAST;
 		topPanel.add(flagCounter, topC);
+		flagCounter.setText("99");
 
 		JLabel timerLabel = new JLabel("00:00", JLabel.CENTER);
 		timerLabel.setBackground(Color.WHITE);
@@ -137,6 +140,10 @@ public class MinesweeperGamePanel extends JPanel {
 		btnMenu.addActionListener(e -> retFunc.run());
 
 		timer.start();
+	}
+	
+	private void resetGameField() {
+		
 	}
 
 	private void createButtons(JPanel grid) {
@@ -319,11 +326,13 @@ public class MinesweeperGamePanel extends JPanel {
 	}
 
 	private void updateFlaggedCellsCounter() {
+		if (gameInterface.getGameOver()) return;
 		short flaggedCellsCount = gameInterface.getFlaggedCellsCount();
 		if (flaggedCellsCount > 99) {
 			return;
 		}
-		String flaggedCellsCountString = (flaggedCellsCount < 10) ? "0" + flaggedCellsCount : String.valueOf(flaggedCellsCount);
+		var differenceBetweenMinesAndFlags = this.minesCount - flaggedCellsCount;
+		String flaggedCellsCountString = (differenceBetweenMinesAndFlags < 10) ? "0" + flaggedCellsCount : String.valueOf(differenceBetweenMinesAndFlags);
 		flagCounter.setText(flaggedCellsCountString);
 	}
 

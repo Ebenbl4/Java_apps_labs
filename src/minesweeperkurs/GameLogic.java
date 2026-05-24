@@ -67,6 +67,11 @@ public class GameLogic implements GameInterface {
 	}
 
 	@Override
+	public int getTotalMinesCount() {
+		return this.MINES_COUNT;
+	}
+	
+	@Override
     public CellState getState(short row, short col) {
 		if ((row >= ROWS || row < 0) || (col >= COLS || col < 0)) {
 				//write custom exception here 
