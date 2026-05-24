@@ -27,7 +27,7 @@ TODO list will be changed by the course of work. Some more items can be added to
 
 ### Display
 - [x] Make a timer, a mine counter and an iconic smiling face icon displaying alongside with the game field.
-- ~~[ ] Make graphics suitable for human eyes.~~ *No graphics were used for text so it still looks cringy. I'm not gonna do anything about it*
+- [x] ~~Make graphics suitable for human eyes.~~ *No graphics were used for text so it still looks cringy. I'm not gonna do anything about it*
 - [x] Make an ability to restart game.
 - [x] Make graphical menu.
 - [x] Rewrite code for displaying game field.
