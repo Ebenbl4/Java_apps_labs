@@ -73,7 +73,7 @@ public class MinesweeperGamePanel extends JPanel {
 		topC.insets = new Insets(5, 5, 5, 5);
 		topPanel.add(btnMenu, topC);
 
-		createIconButton(topPanel);
+		createIconButton();
 		topC.gridx = 1;
 		topC.gridy = 0;
 		topC.weightx = 1;
@@ -176,7 +176,7 @@ public class MinesweeperGamePanel extends JPanel {
 		}
 	}
 
-	private void createIconButton(JPanel panel) {
+	private void createIconButton() {
 		iconButton = new JButton();
 		iconButton.setSize(32, 32);
 		iconButton.setFocusPainted(false);
