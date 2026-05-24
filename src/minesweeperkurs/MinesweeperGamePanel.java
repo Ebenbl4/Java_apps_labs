@@ -246,6 +246,7 @@ public class MinesweeperGamePanel extends JPanel {
 		}
 		gameInterface.checkWinCondition();
 		if (gameInterface.getGameOver()) {
+			flagCounter.setText("00");
 			timer.stop();
 			gameOver();
 		}
